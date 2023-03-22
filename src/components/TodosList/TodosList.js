@@ -9,28 +9,44 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 
 import TrashButton from "@mui/icons-material/Delete";
-import CommentIcon from "@mui/icons-material/Comment";
+import Button from '@mui/material/Button';
 
-const TodoItem = ({todoText, deleteTodoCallback}) => {
+const TodoItem = ({todoText, deleteTodoCallback, onTodoToDeleteBulkClickCallback}) => {
   
 
-  const onTodoItemClick = () => {
+  const onTodoItemClick = (event) => {
+    // event.stopPropagation();
     console.log("🚀 ~ file: TodosList.js:15 ~ TodoItem ~ todoText:", todoText)
     deleteTodoCallback(todoText)
+  }
+
+  const onCheckBoxClick = () => {
+    onTodoToDeleteBulkClickCallback(todoText)
   }
 
   return (
     <>
       <ListItem
-        key={todoText}
         secondaryAction={
           <IconButton edge="end" aria-label="eliminar">
             <TrashButton  onClick = {onTodoItemClick}/>
           </IconButton>
         }
-        
-        // onClick={() => onListItemClick(todo.todo)}
       >
+        <ListItemButton 
+          // onClick={() => onTodoToDeleteBulkClickCallback(todoText)}
+          onClick={onCheckBoxClick}
+          >
+          <ListItemIcon>
+            <Checkbox
+              edge="start"
+              // checked={checked.indexOf(value) !== -1}
+              // tabIndex={-1}
+              disableRipple
+              // inputProps={{ 'aria-labelledby': labelId }}
+            />
+        </ListItemIcon>
+        </ListItemButton>
         <ListItemText id={todoText} primary={todoText} />
       </ListItem>
       <Divider variant="inset" component="li" />
@@ -38,16 +54,26 @@ const TodoItem = ({todoText, deleteTodoCallback}) => {
   );
 };
 
-export const TodosList = ({ todosList, deleteTodoCallback }) => {
+export const TodosList = ({ todosList, deleteTodoCallback, onTodoToDeleteBulkClickCallback }) => {
+console.log("🚀 ~ file: TodosList.js:42 ~ TodosList ~ todosList:", todosList)
 
   return (
-    <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {todosList.map((todo) => {
-        return <TodoItem 
-            todoText = {todo.todo} 
-            deleteTodoCallback = {deleteTodoCallback}
-        />
-      })}
-    </List>
+    <>
+       <Button 
+          variant='contained' 
+          type="submit"> 
+            Eliminar Todos  Seleccionados
+        </Button>
+        <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+          {todosList && todosList?.map((todo) => {
+            return <TodoItem 
+                todoText = {todo.todo} 
+                key={todo.todo}
+                deleteTodoCallback = {deleteTodoCallback}
+                onTodoToDeleteBulkClickCallback = {onTodoToDeleteBulkClickCallback}
+            />
+          })}
+        </List>
+    </>
   );
 };
